@@ -1,5 +1,8 @@
 import express from "express";
 import config from "config";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const port = config.get("port") as number;
 const host = config.get("host") as string;
