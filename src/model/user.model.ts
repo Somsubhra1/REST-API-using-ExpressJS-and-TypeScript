@@ -8,7 +8,7 @@ export interface UserDocument extends mongoose.Document {
   password: string;
   createdAt: Date;
   updatedAt: Date;
-  comparePassword(candidatePassword: String): Promise<Boolean>;
+  comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
 const UserSchema = new mongoose.Schema(
@@ -17,13 +17,12 @@ const UserSchema = new mongoose.Schema(
     name: { type: String, required: true },
     password: { type: String, required: true },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
 UserSchema.pre("save", async function (next) {
   let user = this as UserDocument;
+
   // only hash the password if it has been modified (or is new)
   if (!user.isModified("password")) return next();
 
@@ -38,6 +37,7 @@ UserSchema.pre("save", async function (next) {
   return next();
 });
 
+// Used for logging in
 UserSchema.methods.comparePassword = async function (
   candidatePassword: string
 ) {
@@ -46,6 +46,6 @@ UserSchema.methods.comparePassword = async function (
   return bcrypt.compare(candidatePassword, user.password).catch((e) => false);
 };
 
-const User = mongoose.model<UserDocument>("User", UserSchema); // include custom definition here
+const User = mongoose.model<UserDocument>("User", UserSchema);
 
 export default User;
